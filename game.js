@@ -8,6 +8,11 @@ const btnDown = document.querySelector('#down');
 let canvasSize;
 let elementSize;
 
+const playerPosition = {
+    x: undefined,
+    y: undefined
+};
+
 window.addEventListener('load', setCanvasSize);
 window.addEventListener('resize', setCanvasSize);
 
@@ -34,26 +39,41 @@ function startGame() {
     game.textAlign = 'end';
 
     /* Splitting the map into rows and columns. */
-    const map = maps[2];
+    const map = maps[0];
     const mapRows = map.trim().split('\n');
     const mapRowCols = mapRows.map(row => row.trim().split(''));
     console.log({ map, mapRows, mapRowCols });
 
+    /* Clearing the canvas. */
+    game.clearRect(0,0,canvasSize, canvasSize);
     /* Drawing the map in the canvas. */
     mapRowCols.forEach((row, rowI) => {
         row.forEach((col, colI) => {
             const emoji = emojis[col];
             const posX = elementSize * (colI + 1);
             const posY = elementSize  * (rowI + 1);
+
+            if(col == 'O') {
+                if (!playerPosition.x && !playerPosition.y) {
+                    playerPosition.x = posX;
+                playerPosition.y = posY;
+                console.log({playerPosition});
+                }
+            }
             game.fillText(emoji, posX, posY)
         })
     });
 
+    movePlayer();
     // for (let row = 1; row <= 10; row++) {
     //     for (let col = 1; col <= 10; col++) {
     //         game.fillText(emojis[mapRowCols[row - 1][col - 1]], elementSize * col, elementSize * row);
     //     }
     // }
+}
+
+function movePlayer() {
+    game.fillText(emojis['PLAYER'], playerPosition.x, playerPosition.y);
 }
 
 
@@ -98,15 +118,23 @@ function moveByKeys(event) {
     console.log(pressedKey);
 }
 
+
 function moveUp() {
     console.log('Me quiero mover hacia arriba');
+    (playerPosition.y - elementSize) < 0 ? console.log('OUT') : playerPosition.y -= elementSize;
+    startGame();
 }
 function moveLeft() {
-    console.log('Me quiero mover hacia izquierda');
+    console.log('Me quiero mover hacia izquierda');(playerPosition.x - elementSize) < elementSize ? console.log('OUT') : playerPosition.x -= elementSize;
+    startGame();
 }
 function moveRight() {
     console.log('Me quiero mover hacia derecha');
+    (playerPosition.x + elementSize) > canvasSize ? console.log('OUT') : playerPosition.x += elementSize;
+    startGame();
 }
 function moveDown() {
     console.log('Me quiero mover hacia abajo');
+    (playerPosition.y + elementSize) > canvasSize ? console.log('OUT') : playerPosition.y += elementSize;
+    startGame();
 }
