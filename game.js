@@ -13,6 +13,11 @@ const playerPosition = {
     y: undefined
 };
 
+const giftPosition = {
+    x: undefined,
+    y: undefined
+}
+
 window.addEventListener('load', setCanvasSize);
 window.addEventListener('resize', setCanvasSize);
 
@@ -53,13 +58,18 @@ function startGame() {
             const posX = elementSize * (colI + 1);
             const posY = elementSize  * (rowI + 1);
 
+            /* Setting play on initial position. */
             if(col == 'O') {
                 if (!playerPosition.x && !playerPosition.y) {
                     playerPosition.x = posX;
                 playerPosition.y = posY;
                 console.log({playerPosition});
                 }
+            } else if (col == 'I') {
+                giftPosition.x = posX;
+                giftPosition.y = posY;
             }
+
             game.fillText(emoji, posX, posY)
         })
     });
@@ -73,9 +83,17 @@ function startGame() {
 }
 
 function movePlayer() {
+    /* Checking if the player is in the same position as the gift. */
+    /* Clamping coincidence to 3 decimals */
+    const giftCollisionX = playerPosition.x.toFixed(3) == giftPosition.x.toFixed(3);
+    const giftCollisionY = playerPosition.y.toFixed(3) == giftPosition.y.toFixed(3);
+    const giftCollision = giftCollisionX && giftCollisionY; 
+
+    if(giftCollision) {
+        console.log('Subiste de nivel!');
+    }
     game.fillText(emojis['PLAYER'], playerPosition.x, playerPosition.y);
 }
-
 
 window.addEventListener('keydown',moveByKeys);
 /* Adding an event listener to the buttons. */
