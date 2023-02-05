@@ -4,6 +4,7 @@ const btnUp = document.querySelector('#up');
 const btnLeft = document.querySelector('#left');
 const btnRight = document.querySelector('#right');
 const btnDown = document.querySelector('#down');
+const spanLives = document.querySelector('#lives')
 
 let canvasSize;
 let elementSize;
@@ -56,6 +57,8 @@ function startGame() {
     const mapRows = map.trim().split('\n');
     const mapRowCols = mapRows.map(row => row.trim().split(''));
     console.log({ map, mapRows, mapRowCols });
+
+    showLives();
 
     enemyPositions = [];
     /* Clearing the canvas. */
@@ -146,6 +149,16 @@ function gameWin() {
     console.log('Terminaste el juego');
 }
 
+function showLives() {
+    const heartsArray = Array(lives).fill(emojis['HEART']); // [1,2,3]
+    //console.log(heartsArray);
+
+    spanLives.innerHTML = "";
+    heartsArray.forEach(heart => {
+        spanLives.append(heart);
+    });
+}
+
 window.addEventListener('keydown',moveByKeys);
 /* Adding an event listener to the buttons. */
 btnUp.addEventListener('click', moveUp);
@@ -153,6 +166,7 @@ btnLeft.addEventListener('click', moveLeft);
 btnRight.addEventListener('click', moveRight);
 btnDown.addEventListener('click', moveDown);
 
+/*Enum object for key entries*/ 
 const moves = {
     GamerMode: {
         Up: 'w',
@@ -166,7 +180,6 @@ const moves = {
         Right: 'ArrowRight',
         Down: 'ArrowDown'
     }
-    
 }
 
 function moveByKeys(event) {
