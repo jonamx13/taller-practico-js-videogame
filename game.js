@@ -5,11 +5,16 @@ const btnLeft = document.querySelector('#left');
 const btnRight = document.querySelector('#right');
 const btnDown = document.querySelector('#down');
 const spanLives = document.querySelector('#lives')
+const spanTime = document.querySelector('#time');
 
 let canvasSize;
 let elementSize;
 let level = 0;
 let lives = 3;
+
+let timeStart;
+let timePlayer;
+let timeInterval;
 
 const playerPosition = {
     x: undefined,
@@ -54,6 +59,11 @@ function startGame() {
         gameWin();
         return;
     }
+
+    if (!timeStart) {
+        timeStart = Date.now();
+    }
+
     const mapRows = map.trim().split('\n');
     const mapRowCols = mapRows.map(row => row.trim().split(''));
     console.log({ map, mapRows, mapRowCols });
@@ -160,6 +170,10 @@ function showLives() {
     heartsArray.forEach(heart => {
         spanLives.append(heart);
     });
+}
+
+function showTime() {
+    spanTime = Date.now() - timeStart;
 }
 
 window.addEventListener('keydown',moveByKeys);
