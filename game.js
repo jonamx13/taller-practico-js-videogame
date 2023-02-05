@@ -153,7 +153,10 @@ function showLives() {
     const heartsArray = Array(lives).fill(emojis['HEART']); // [1,2,3]
     //console.log(heartsArray);
 
+    /* Clearing the span element. */
     spanLives.innerHTML = "";
+
+    /* Adding the hearts to the span element. */
     heartsArray.forEach(heart => {
         spanLives.append(heart);
     });
