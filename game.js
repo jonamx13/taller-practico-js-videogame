@@ -62,7 +62,7 @@ function startGame() {
 
     if (!timeStart) {
         timeStart = Date.now();
-        time = setInterval(showTime, 100);
+        timeInterval = setInterval(showTime, 100);
     }
 
     const mapRows = map.trim().split('\n');
@@ -176,8 +176,13 @@ function showLives() {
 }
 
 function showTime() {
-    spanTime.innerHTML = Date.now() - timeStart;
+    const msToSec = (Date.now() - timeStart) / 1000;
+    const seconds = msToSec < 10 ? `0${parseInt(msToSec)}`: parseInt(msToSec);
+    const minutes = seconds / 60;
+
+    spanTime.innerHTML = `${minutes}:`;
 }
+
 
 window.addEventListener('keydown',moveByKeys);
 /* Adding an event listener to the buttons. */
