@@ -62,6 +62,7 @@ function startGame() {
 
     if (!timeStart) {
         timeStart = Date.now();
+        time = setInterval(showTime, 100);
     }
 
     const mapRows = map.trim().split('\n');
@@ -148,6 +149,7 @@ function levelFail() {
     if ( lives <= 0) {
         level = 0;
         lives = 3;
+        timeStart = undefined;
     }
 
     playerPosition.x = undefined;
@@ -157,6 +159,7 @@ function levelFail() {
 
 function gameWin() {
     console.log('Terminaste el juego');
+    clearInterval(timeInterval);
 }
 
 function showLives() {
@@ -173,7 +176,7 @@ function showLives() {
 }
 
 function showTime() {
-    spanTime = Date.now() - timeStart;
+    spanTime.innerHTML = Date.now() - timeStart;
 }
 
 window.addEventListener('keydown',moveByKeys);
