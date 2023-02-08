@@ -177,10 +177,16 @@ function showLives() {
 
 function showTime() {
     const msToSec = (Date.now() - timeStart) / 1000;
-    const seconds = msToSec < 10 ? `0${parseInt(msToSec)}`: parseInt(msToSec);
-    const minutes = seconds / 60;
+    const milliInterval = Date.now() - timeStart;
+    const milliseconds = (String(msToSec - Math.floor(msToSec)).split('.')[1]).substring(0,2);
+    let seconds = Math.floor(milliInterval / 1000);
+    let minutes = Math.floor(seconds / 60);
 
-    spanTime.innerHTML = `${minutes}:`;
+    seconds = (seconds % 60) < 10 ? `0${seconds % 60}` : seconds % 60;
+    minutes = (minutes % 60) < 10 ? `0${minutes % 60}` : minutes % 60;
+
+
+    spanTime.innerHTML = `${minutes}:${seconds}:${milliseconds}`;
 }
 
 
