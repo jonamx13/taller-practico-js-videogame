@@ -134,10 +134,7 @@ function levelWin() {
 }
 
 function levelFail() {
-    console.log('Chocaste contra un enemigo');
     lives --;
-
-    console.log(lives);
 
     if ( lives <= 0) {
         level = 0;
@@ -151,7 +148,6 @@ function levelFail() {
 }
 
 function gameWin() {
-    console.log('Terminaste el juego');
     clearInterval(timeInterval);
     recordStorage();
 }
