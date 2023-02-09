@@ -39,17 +39,19 @@ function setCanvasSize() {
         canvasSize = window.innerHeight * 0.8;
     }
 
+    canvasSize = Number(canvasSize.toFixed(2))
     canvas.setAttribute('width', canvasSize);
     canvas.setAttribute('height', canvasSize);
 
     elementSize = (canvasSize / 10) - 1;
 
+    playerPosition.x = undefined;
+    playerPosition.y = undefined;
+
     startGame();
 }
 
 function startGame() {
-    console.log({ canvasSize, elementSize });
-
     /* Drawing the X emoji in the canvas. */
     game.font = elementSize + 'px Verdana';
     game.textAlign = 'end';
@@ -70,7 +72,6 @@ function startGame() {
 
     const mapRows = map.trim().split('\n');
     const mapRowCols = mapRows.map(row => row.trim().split(''));
-    console.log({ map, mapRows, mapRowCols });
 
     showLives();
 
@@ -89,7 +90,6 @@ function startGame() {
                 if (!playerPosition.x && !playerPosition.y) {
                     playerPosition.x = posX;
                 playerPosition.y = posY;
-                console.log({playerPosition});
                 }
             } else if (col == 'I') {
                 giftPosition.x = posX;
@@ -106,11 +106,6 @@ function startGame() {
     });
 
     movePlayer();
-    // for (let row = 1; row <= 10; row++) {
-    //     for (let col = 1; col <= 10; col++) {
-    //         game.fillText(emojis[mapRowCols[row - 1][col - 1]], elementSize * col, elementSize * row);
-    //     }
-    // }
 }
 
 function movePlayer() {
@@ -120,9 +115,7 @@ function movePlayer() {
     const giftCollisionY = playerPosition.y.toFixed(3) == giftPosition.y.toFixed(3);
     const giftCollision = giftCollisionX && giftCollisionY; 
 
-    if (giftCollision) {
-        levelWin();
-    }
+    if (giftCollision) { levelWin() }
 
     const enemyCollision = enemyPositions.find(enemy => {
         const enemyCollisionX = enemy.x.toFixed(3) == playerPosition.x.toFixed(3);
@@ -130,15 +123,12 @@ function movePlayer() {
         return enemyCollisionX && enemyCollisionY;
     });
 
-    if (enemyCollision) {
-        levelFail();
-    }
+    if (enemyCollision) { levelFail() }
 
     game.fillText(emojis['PLAYER'], playerPosition.x, playerPosition.y);
 }
 
 function levelWin() {
-    console.log('Subiste de nivel');
     level++;
     startGame();
 }
@@ -166,58 +156,7 @@ function gameWin() {
     recordStorage();
 }
 
-function recordStorage() {
-    const recordTime = localStorage.getItem('record_time');
-    const playerTime = timeFormatter(Date.now() - timeStart);
 
-    if(!recordStorage) {
-        localStorage.setItem('record_time', playerTime);
-        pResult.innerHTML = ('Este es tu primer record');
-        return;
-    }
-
-    if(recordTime && recordTime >= playerTime) {
-        localStorage.setItem('record_time', playerTime);
-        pResult.innerHTML = 'Superaste el record!';
-        return;
-    }
-
-    pResult.innerHTML = 'No superaste el record';
-}
-
-function showLives() {
-    const heartsArray = Array(lives).fill(emojis['HEART']); // [1,2,3]
-
-    /* Clearing the span element. */
-    spanLives.innerHTML = "";
-
-    /* Adding the hearts to the span element. */
-    heartsArray.forEach(heart => {
-        spanLives.append(heart);
-    });
-}
-
-function showTime() {
-    const milliInterval = Date.now() - timeStart;
-    spanTime.innerHTML = timeFormatter(milliInterval);
-}
-
-function timeFormatter(millisecondsInterval) {
-    const msToSec = (millisecondsInterval) / 1000;
-    
-    const milliseconds = (String(msToSec - Math.floor(msToSec)).split('.')[1]).substring(0,2);
-    let seconds = Math.floor(millisecondsInterval / 1000);
-    let minutes = Math.floor(seconds / 60);
-
-    seconds = (seconds % 60) < 10 ? `0${seconds % 60}` : seconds % 60;
-    minutes = (minutes % 60) < 10 ? `0${minutes % 60}` : minutes % 60;
-
-    return `${minutes}:${seconds}:${milliseconds}`;
-}
-
-function showRecord() {
-    spanRecord.innerHTML = localStorage.getItem('record_time');
-}
 
 window.addEventListener('keydown',moveByKeys);
 /* Adding an event listener to the buttons. */
@@ -226,57 +165,3 @@ btnLeft.addEventListener('click', moveLeft);
 btnRight.addEventListener('click', moveRight);
 btnDown.addEventListener('click', moveDown);
 
-/*Enum object for key entries*/ 
-const moves = {
-    GamerMode: {
-        Up: 'w',
-        Left: 'a',
-        Right: 'd',
-        Down: 's'
-    },
-    mortalMode: {
-        Up: 'ArrowUp',
-        Left: 'ArrowLeft',
-        Right: 'ArrowRight',
-        Down: 'ArrowDown'
-    }
-}
-
-function moveByKeys(event) {
-    const pressedKey = event.key;
-
-    pressedKey == moves.GamerMode.Up ||
-    pressedKey == moves.mortalMode.Up ?
-    moveUp() :
-    pressedKey == moves.GamerMode.Left ||
-    pressedKey == moves.mortalMode.Left ?
-    moveLeft() :
-    pressedKey == moves.GamerMode.Right ||
-    pressedKey == moves.mortalMode.Right ?
-    moveRight() :
-    pressedKey == moves.GamerMode.Down ||
-    pressedKey == moves.mortalMode.Down ?
-    moveDown() :
-    console.log(pressedKey);
-}
-
-
-function moveUp() {
-    console.log('Me quiero mover hacia arriba');
-    (playerPosition.y - elementSize) < 0 ? console.log('OUT') : playerPosition.y -= elementSize;
-    startGame();
-}
-function moveLeft() {
-    console.log('Me quiero mover hacia izquierda');(playerPosition.x - elementSize) < elementSize ? console.log('OUT') : playerPosition.x -= elementSize;
-    startGame();
-}
-function moveRight() {
-    console.log('Me quiero mover hacia derecha');
-    (playerPosition.x + elementSize) > canvasSize ? console.log('OUT') : playerPosition.x += elementSize;
-    startGame();
-}
-function moveDown() {
-    console.log('Me quiero mover hacia abajo');
-    (playerPosition.y + elementSize) > canvasSize ? console.log('OUT') : playerPosition.y += elementSize;
-    startGame();
-}
