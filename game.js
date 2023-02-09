@@ -163,27 +163,30 @@ function levelFail() {
 function gameWin() {
     console.log('Terminaste el juego');
     clearInterval(timeInterval);
+    recordStorage();
+}
 
+function recordStorage() {
     const recordTime = localStorage.getItem('record_time');
-    const playerTime = Date.now() - timeStart;
+    const playerTime = timeFormatter(Date.now() - timeStart);
 
-    if(recordTime) {
-        if(recordTime >= playerTime) {
-            localStorage.setItem('record_time', playerTime);
-            console.log('Superaste el record!');
-        } else {
-            console.log('No superaste el record');
-        }
-    } else {
+    if(!recordStorage) {
         localStorage.setItem('record_time', playerTime);
+        pResult.innerHTML = ('Este es tu primer record');
+        return;
     }
 
-    console.log({recordTime, playerTime});
+    if(recordTime && recordTime >= playerTime) {
+        localStorage.setItem('record_time', playerTime);
+        pResult.innerHTML = 'Superaste el record!';
+        return;
+    }
+
+    pResult.innerHTML = 'No superaste el record';
 }
 
 function showLives() {
     const heartsArray = Array(lives).fill(emojis['HEART']); // [1,2,3]
-    //console.log(heartsArray);
 
     /* Clearing the span element. */
     spanLives.innerHTML = "";
@@ -195,19 +198,26 @@ function showLives() {
 }
 
 function showTime() {
-    const msToSec = (Date.now() - timeStart) / 1000;
     const milliInterval = Date.now() - timeStart;
+    spanTime.innerHTML = timeFormatter(milliInterval);
+}
+
+function timeFormatter(millisecondsInterval) {
+    const msToSec = (millisecondsInterval) / 1000;
+    
     const milliseconds = (String(msToSec - Math.floor(msToSec)).split('.')[1]).substring(0,2);
-    let seconds = Math.floor(milliInterval / 1000);
+    let seconds = Math.floor(millisecondsInterval / 1000);
     let minutes = Math.floor(seconds / 60);
 
     seconds = (seconds % 60) < 10 ? `0${seconds % 60}` : seconds % 60;
     minutes = (minutes % 60) < 10 ? `0${minutes % 60}` : minutes % 60;
 
-
-    spanTime.innerHTML = `${minutes}:${seconds}:${milliseconds}`;
+    return `${minutes}:${seconds}:${milliseconds}`;
 }
 
+function showRecord() {
+    spanRecord.innerHTML = localStorage.getItem('record_time');
+}
 
 window.addEventListener('keydown',moveByKeys);
 /* Adding an event listener to the buttons. */
